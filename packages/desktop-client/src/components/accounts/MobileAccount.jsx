@@ -216,9 +216,8 @@ export function Account(props) {
 
   const onSelectTransaction = transaction => {
     // details of how the native app used to handle preview transactions here can be found at commit 05e58279
-    if (!isPreviewId(transaction.id)) {
-      navigate(`transactions/${transaction.id}`);
-    }
+    console.log(transaction)
+    navigate(`transactions/${transaction.id}`);
   };
 
   const balance = queries.accountBalance(account);

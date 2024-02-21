@@ -64,6 +64,7 @@ function NarrowNotSupported({
 
 function WideNotSupported({ children, redirectTo = '/budget' }) {
   const { isNarrowWidth } = useResponsive();
+  console.log(isNarrowWidth)
   const navigate = useNavigate();
   useEffect(() => {
     if (!isNarrowWidth) {
@@ -216,6 +217,15 @@ function FinancesAppWithoutContext() {
 
                 <Route
                   path="/accounts/:id/transactions/:transactionId"
+                  element={
+                    <WideNotSupported>
+                      <TransactionEdit />
+                    </WideNotSupported>
+                  }
+                />
+
+<Route
+                  path="/accounts/:id/transactions/preview/:transactionId"
                   element={
                     <WideNotSupported>
                       <TransactionEdit />

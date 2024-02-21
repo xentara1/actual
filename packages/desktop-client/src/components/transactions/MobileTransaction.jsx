@@ -942,7 +942,7 @@ function TransactionEditUnconnected(props) {
   const adding = useRef(false);
   const deleted = useRef(false);
   useSetThemeColor(theme.mobileViewTheme);
-
+  console.log(transactionId)
   useEffect(() => {
     async function fetchTransaction() {
       // Query for the transaction based on the ID with grouped splits.
@@ -955,12 +955,24 @@ function TransactionEditUnconnected(props) {
       // transactions when handling splits, so we call ungroupTransactions to
       // flatten parent and children into one array.
       const { data } = await runQuery(
-        q('transactions')
-          .filter({ id: transactionId })
+        q('schedules').filter({id: transactionId})
           .select('*')
-          .options({ splits: 'grouped' }),
       );
-      setFetchedTransactions(ungroupTransactions(data));
+      const schedule = data[0];
+      console.log(schedule)
+      if (schedule == null || schedule._account == null) {
+        return;
+      }
+      const transaction = {
+        payee: schedule._payee,
+        account: schedule._account,
+        amount: getScheduledAmount(schedule._amount),
+        date: schedule.next_date,
+        schedule: schedule.id,
+        cleared: false,
+      };
+      console.log(data)
+      setFetchedTransactions([transaction]);
     }
     if (transactionId) {
       fetchTransaction();
@@ -1115,7 +1127,6 @@ export const TransactionEdit = props => {
   const accounts = useAccounts();
   const dateFormat = useDateFormat() || 'MM/dd/yyyy';
   const actions = useActions();
-
   return (
     <SingleActiveEditFormProvider formName="mobile-transaction">
       <TransactionEditUnconnected
